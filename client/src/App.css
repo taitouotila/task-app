@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
+html * {
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --primary-color-dark: #1E1E1E;
+    --primary-color: #4786FF;
+    --font-color-dark: #121212;
+    --font-color-white-87: rgba(255, 255, 255, 0.87);
+    --font-color-white-35: rgba(255, 255, 255, 0.35);
+}
+.App {
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin: 1rem;
+    color: var(--font-color-white-87);
+}
+ul {
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.tasks {
+}
+
+.task {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    height: 50px;
+    width: 90%;
+    max-width: 500px;
+    text-align: left;
+    background-color: var(--primary-color-dark);
+    border-radius: 5px;
+    color: var(--font-color-white-87);
+    margin: 0.5rem;
+}
+li {
+    position: relative;
+    line-height: 50px;
+}
+.task__buttons {
+    position: absolute;
+    display: flex;
+    right: 0;
+    margin-right: 1rem;
+}
+.task__button {
+    margin-left: 0.75rem;
+    width: 24px;
+    height: 24px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+.task__checkbox {
+    cursor: pointer;
+    position: absolute;
+    left: 0;
+    margin-left: 1rem;
+    margin-top: 16px;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    accent-color: #121212;
+    user-select: none;
+}
+.task__title {
+    margin-left: 3rem;
+    position: absolute;
+}
+.task__title--edit {
+    max-width: 90%;
+    width: 360px;
+}
+.task__title--edit input:focus, input {
+    outline: none;
+    border: none;
+    font-size: 16px;
+    color: var(--font-color-white-87);
+    width: 100%;
+}
+.task__title--edit--input {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.add-task {
+    margin: 2rem 0 1rem 0;
+}
+
+.add-task__form {
+    margin: 0 auto;
+    white-space: nowrap;
+    max-width: 90%;
+    width: 500px;
+    display: flex;
+    height: 50px;
+}
+
+.add-task__form__input {
+    background-color: var(--primary-color-dark);
+    width: 420px;
+    max-width: 90%;
+}
+
+.add-task__form__button {
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    height: 50px;
+    float: right;
+    clear: none;
+    right: 0;
+    width: 80px;
+    margin-left: 10px;
+    border: none;
+    background-color: var(--primary-color-dark);
+    color: var(--font-color-white-87);
+}
+
+.add-task__form__input, .add-task__form__button {
+    display: inline-block;
+    padding: 16px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+
+}
