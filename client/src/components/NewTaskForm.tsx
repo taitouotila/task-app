@@ -1,15 +1,23 @@
+import { client } from '../api';
+import { Task } from '../model';
+
 interface Props {
     task: string,
     setTask: React.Dispatch<React.SetStateAction<string>>,
-    addTask: (e: React.FormEvent) => void;
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-export function NewTaskForm({ task, setTask, addTask }: Props) {
+export function NewTaskForm({ task, setTask, setTasks }: Props) {
+
+    async function addTask() {
+        const response = await client.post("/api/v1/tasks", { title: task });
+        setTasks(prevTasks => ([...prevTasks, ...response.data]));
+    }
 
     function handleSubmit(e: any) {
         e.preventDefault();
         if (task === "") return;
-        addTask(e);
+        addTask();
         setTask("");
     }
 

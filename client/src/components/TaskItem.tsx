@@ -1,20 +1,22 @@
 import { MdDelete } from 'react-icons/md';
+import { Task } from '../model';
+import { client } from '../api';
 import CSS from 'csstype';
 import { useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 
 interface Props {
-    id: string;
+    id: number;
     title: string;
     completed: boolean;
-    toggleCompleted: (id: string, completed: boolean) => void;
-    deleteTask: (id: string) => void;
-    editTask: (id: string, newTitle: string) => void;
+    setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+    tasks: Task[];
 }
 
-export function TaskItem({ id, title, completed, toggleCompleted, deleteTask, editTask }: Props) {
+export function TaskItem({ id, title, completed, tasks, setTasks }: Props) {
 
     const [editing, setEditing] = useState(false);
+    const [updateInput, setUpdateInput] = useState(title);
 
     let viewMode: CSS.Properties = {};
     let editMode: CSS.Properties = {};
@@ -22,6 +24,7 @@ export function TaskItem({ id, title, completed, toggleCompleted, deleteTask, ed
     let completedItemStyle: CSS.Properties = {};
 
     (editing) ? viewMode.display = 'none' : editMode.display = 'none';
+
     if (completed) {
         completedStyle.textDecoration = 'line-through';
         completedItemStyle.backgroundColor = '#121212';
@@ -37,6 +40,38 @@ export function TaskItem({ id, title, completed, toggleCompleted, deleteTask, ed
         }
     }
 
+    async function editTask(id: number, title: string) {
+        const response = await client.put(`/api/v1/tasks/${id}`, { title: title });
+
+        setTasks(tasks.map((task) => {
+            if (task.id === id) {
+                task.title = response.data;
+            }
+            return task;
+        }))
+
+        setEditing(false);
+    }
+
+    async function toggleCompleted(id: number, completed: boolean) {
+        const response = await client.put(`/api/v1/tasks/${id}/complete`, { completed: completed });
+        setTasks((currentTasks) => {
+            return currentTasks.map((task) => {
+                if (task.id === id) {
+                    return { ...task, completed };
+                }
+                return task;
+            });
+        });
+    }
+
+    async function deleteTask(id: number) {
+        const response = await client.delete(`/api/v1/tasks/${id}`);
+        setTasks((currentTasks) => {
+            return currentTasks.filter((task) => task.id !== id);
+        })
+    }
+
     return (
         <div className="task" style={completedItemStyle}>
             <li>
@@ -46,7 +81,7 @@ export function TaskItem({ id, title, completed, toggleCompleted, deleteTask, ed
                     checked={completed}
                     onChange={(e) => toggleCompleted(id, e.target.checked)} />
                 <div className="task__title  task__title--view" style={viewMode}>
-                    <span style={completedStyle} onClick={() => toggleEditing()}>{title}</span>
+                    <span style={completedStyle} onClick={() => toggleEditing()}>{updateInput}</span>
                 </div>
                 <div className="task__title task__title--edit">
                     <input
@@ -55,10 +90,10 @@ export function TaskItem({ id, title, completed, toggleCompleted, deleteTask, ed
                         style={editMode}
                         type="text"
                         maxLength={46}
-                        value={title}
-                        onChange={(e) => editTask(id, e.target.value)}
-                        onKeyUp={(e) => { if (e.key === 'Enter') setEditing(false) }}
-                        onBlur={() => setEditing(false)} />
+                        value={updateInput}
+                        onChange={(e) => setUpdateInput(e.target.value)}
+                        onKeyUp={(e) => { if (e.key === 'Enter') editTask(id, updateInput) }}
+                        onBlur={() => editTask(id, updateInput)} />
                 </div>
                 <div className="task__buttons">
                     <div className="task_buttons__edit">

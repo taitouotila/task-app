@@ -14,7 +14,7 @@ const pool = new Pool({
 
 
 const getTasks = async (req: Request, res: Response) => {
-    pool.query('SELECT * FROM task', (error, results) => {
+    pool.query('SELECT * FROM task ORDER BY id', (error, results) => {
         if (error) {
             throw error;
         }
@@ -33,7 +33,9 @@ const createTask = async (req: Request, res: Response) => {
             return {
                 "id": row.id,
                 "title": row.title,
-                "completed": row.completed
+                "completed": row.completed,
+                "created_at": row.created_at,
+                "completed_at": row.completed_at,
             }
         })
         res.status(201).json(task);
@@ -48,7 +50,7 @@ const editTask = async (req: Request, res: Response) => {
         if (error) {
             throw error;
         }
-        res.status(200).send(`Task edited with ID: ${results.rows[0].id}. New task: ${results.rows[0].title}`);
+        res.status(200).json(title);
     })
 }
 
@@ -67,10 +69,11 @@ const deleteTask = (req: Request, res: Response) => {
     })
 }
 
-const completeTask = async (req: Request, res: Response) => {
+const toggleTaskCompleted = async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id);
+    const completed: boolean = req.body.completed;
 
-    pool.query('UPDATE task SET completed = true, completed_at = now() WHERE id = $1 RETURNING *', [id], (error, results) => {
+    pool.query('UPDATE task SET completed = $1, completed_at = CASE WHEN $1 = TRUE THEN now() ELSE NULL END WHERE id = $2 RETURNING *', [completed, id], (error, results) => {
         if (error) {
             throw error;
         }
@@ -86,5 +89,5 @@ module.exports = {
     createTask,
     editTask,
     deleteTask,
-    completeTask,
+    toggleTaskCompleted,
 }
