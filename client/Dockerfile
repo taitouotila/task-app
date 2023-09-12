@@ -3,11 +3,11 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 COPY client/package.json package.json
-COPY package-lock.json package-lock.json
+COPY client/package-lock.json package-lock.json
 
 RUN npm install --production
 
-COPY . .
+COPY client/. .
 
 RUN npm run build
 
