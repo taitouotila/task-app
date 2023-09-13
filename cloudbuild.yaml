@@ -1,9 +1,27 @@
 steps:
+# - name: 'gcr.io/cloud-builders/docker'
+#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '-f', 'client/Dockerfile', '.']
+# - name: 'gcr.io/cloud-builders/gcloud'
+#   args: ['app', 'deploy', '--appyaml=client/app.yaml']
+- name: node:10.15.1
+  entrypoint: npm
+  dir: "server"
+  args: ['run', 'create-env']
+  env:
+    - 'DB_HOST=${_DB_HOST}'
+    - 'DB_PORT=${_DB_PORT}'
+    - 'POSTGRES_USER=${_POSTGRES_USER}'
+    - 'POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}'
+    - 'POSTGRES_DB=${_POSTGRES_DB}'
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '-f', 'client/Dockerfile', '.']
+  dir: "server"
+  args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['app', 'deploy', '--appyaml=client/app.yaml']
+  dir: "server"
+  args: ['app', 'deploy', '--appyaml=app.yaml']
 images:
-- '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}'
+# - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
+- '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
+logsBucket: 'gs://taskapp-deploy-logs'
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: GCS_ONLY

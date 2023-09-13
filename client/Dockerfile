@@ -2,18 +2,18 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json package.json
-COPY package-lock.json package-lock.json
+COPY client/package.json package.json
+COPY client/package-lock.json package-lock.json
 
 RUN npm install --omit=dev
 
-COPY . .
+COPY client/. .
 
 RUN npm run build
 
 FROM nginx:alpine
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY client/nginx.conf /etc/nginx/nginx.conf
 
 RUN mkdir -p /var/log/app_engine
 

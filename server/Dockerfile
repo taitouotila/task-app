@@ -1,13 +1,22 @@
-FROM node:18
-WORKDIR /app
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+FROM node:20 as builder
+WORKDIR /usr/src/app
+
 COPY package*.json ./
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --omit=dev
-# Bundle app source
+
+RUN npm ci
+
 COPY . .
 
-CMD [ "node", "server.js" ]
+RUN npm run build
+
+FROM node:20-slim
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm ci --production
+
+COPY --from=builder /usr/src/app/dist ./dist
+
+CMD [ "node", "dist/index.js" ]
