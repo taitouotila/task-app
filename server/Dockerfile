@@ -17,7 +17,7 @@ COPY package*.json ./
 
 RUN npm ci --production
 
-COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/dist/src ./dist
 
 EXPOSE 8080
 
