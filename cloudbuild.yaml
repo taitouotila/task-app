@@ -1,8 +1,16 @@
 steps:
+  # BUILD PUSH AND DEPLOY TASKAPP CLIENT TO CLOUD RUN
 # - name: 'gcr.io/cloud-builders/docker'
-#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '-f', 'client/Dockerfile', '.']
-# - name: 'gcr.io/cloud-builders/gcloud'
-#   args: ['app', 'deploy', '--appyaml=client/app.yaml']
+#   dir: "client"
+#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '-f', 'Dockerfile', '.']
+# - name: 'gcr.io/cloud-builders/docker'
+#   dir: "client"
+#   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+- name: 'gcr.io/cloud-builders/gcloud'
+  dir: "server"
+  args: ['app', 'deploy', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+
+  # ENV FOR TASKAPP SERVER
 - name: node:10.15.1
   entrypoint: npm
   dir: "server"
@@ -13,20 +21,19 @@ steps:
     - 'POSTGRES_USER=${_POSTGRES_USER}'
     - 'POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}'
     - 'POSTGRES_DB=${_POSTGRES_DB}'
-- name: 'gcr.io/cloud-builders/docker'
-  dir: "server"
-  args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
-- name: 'gcr.io/cloud-builders/docker'
-  dir: "server"
-  args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
-# - name: 'gcr.io/cloud-builders/gcloud'
+
+  # BUILD PUSH AND DEPLOY TASKAPP SERVER TO CLOUD RUN
+# - name: 'gcr.io/cloud-builders/docker'
 #   dir: "server"
-#   args: ['app', 'deploy', '--appyaml=app.yaml']
+#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
+# - name: 'gcr.io/cloud-builders/docker'
+#   dir: "server"
+#   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
 - name: 'gcr.io/cloud-builders/gcloud'
   dir: "server"
-  args: ['run', 'deploy', 'task-app-server', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '--region', 'europe-north1']
+  args: ['app', 'deploy', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
 images:
-# - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
+- '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
 logsBucket: 'gs://taskapp-deploy-logs'
 options:
