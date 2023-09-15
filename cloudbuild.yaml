@@ -1,14 +1,14 @@
 steps:
   # BUILD PUSH AND DEPLOY TASKAPP CLIENT TO CLOUD RUN
-# - name: 'gcr.io/cloud-builders/docker'
-#   dir: "client"
-#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '-f', 'Dockerfile', '.']
-# - name: 'gcr.io/cloud-builders/docker'
-#   dir: "client"
-#   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+- name: 'gcr.io/cloud-builders/docker'
+  dir: "client"
+  args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '-f', 'Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  dir: "client"
+  args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
 - name: 'gcr.io/cloud-builders/gcloud'
-  dir: "server"
-  args: ['app', 'deploy', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+  dir: "client"
+  args: ['app', 'deploy', '--appyaml=client.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
 
   # ENV FOR TASKAPP SERVER
 - name: node:10.15.1
@@ -23,15 +23,15 @@ steps:
     - 'POSTGRES_DB=${_POSTGRES_DB}'
 
   # BUILD PUSH AND DEPLOY TASKAPP SERVER TO CLOUD RUN
-# - name: 'gcr.io/cloud-builders/docker'
-#   dir: "server"
-#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
-# - name: 'gcr.io/cloud-builders/docker'
-#   dir: "server"
-#   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
+- name: 'gcr.io/cloud-builders/docker'
+  dir: "server"
+  args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  dir: "server"
+  args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
 - name: 'gcr.io/cloud-builders/gcloud'
   dir: "server"
-  args: ['app', 'deploy', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
+  args: ['app', 'deploy', '--appyaml=server.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
 images:
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
