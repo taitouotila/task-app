@@ -16,9 +16,15 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   dir: "server"
   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  dir: "server"
+  args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
+# - name: 'gcr.io/cloud-builders/gcloud'
+#   dir: "server"
+#   args: ['app', 'deploy', '--appyaml=app.yaml']
 - name: 'gcr.io/cloud-builders/gcloud'
   dir: "server"
-  args: ['app', 'deploy', '--appyaml=app.yaml']
+  args: ['run', 'deploy', 'task-app-server', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '--region', 'europe-north1']
 images:
 # - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
