@@ -1,12 +1,12 @@
 runtime: nodejs
 env: flex
 service: server
-env_variables:
-  DB_HOST=${_DB_HOST}
-  DB_PORT=${_DB_PORT}
-  POSTGRES_USER=${_POSTGRES_USER}
-  POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}
-  POSTGRES_DB=${_POSTGRES_DB}
+# env_variables:
+#   DB_HOST=${_DB_HOST}
+#   DB_PORT=${_DB_PORT}
+#   POSTGRES_USER=${_POSTGRES_USER}
+#   POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}
+#   POSTGRES_DB=${_POSTGRES_DB}
 manual_scaling:
   instances: 1
 resources:
