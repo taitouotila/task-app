@@ -1,37 +1,47 @@
 steps:
   # BUILD PUSH AND DEPLOY TASKAPP CLIENT TO CLOUD RUN
-- name: 'gcr.io/cloud-builders/docker'
+- id: 'Build client image'
+  name: 'gcr.io/cloud-builders/docker'
   dir: "client"
   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '-f', 'Dockerfile', '.']
-- name: 'gcr.io/cloud-builders/docker'
+
+- id: 'Push client image'
+  name: 'gcr.io/cloud-builders/docker'
   dir: "client"
   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
-- name: 'gcr.io/cloud-builders/gcloud'
+
+- id: 'Deploy client image to app engine'
+  name: 'gcr.io/cloud-builders/gcloud'
   dir: "client"
   args: ['app', 'deploy', '--appyaml=client.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
 
-  # ENV FOR TASKAPP SERVER
-- name: node:10.15.1
-  entrypoint: npm
-  dir: "server"
-  args: ['run', 'create-env']
-  env:
-    - 'DB_HOST=${_DB_HOST}'
-    - 'DB_PORT=${_DB_PORT}'
-    - 'POSTGRES_USER=${_POSTGRES_USER}'
-    - 'POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}'
-    - 'POSTGRES_DB=${_POSTGRES_DB}'
+#   # ENV FOR TASKAPP SERVER
+# - name: node:10.15.1
+#   entrypoint: npm
+#   dir: "server"
+#   args: ['run', 'create-env']
+#   env:
+#     - 'DB_HOST=${_DB_HOST}'
+#     - 'DB_PORT=${_DB_PORT}'
+#     - 'POSTGRES_USER=${_POSTGRES_USER}'
+#     - 'POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}'
+#     - 'POSTGRES_DB=${_POSTGRES_DB}'
 
-  # BUILD PUSH AND DEPLOY TASKAPP SERVER TO CLOUD RUN
-- name: 'gcr.io/cloud-builders/docker'
+- id: 'Build server image'
+  name: 'gcr.io/cloud-builders/docker'
   dir: "server"
   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}', '-f', 'Dockerfile', '.']
-- name: 'gcr.io/cloud-builders/docker'
+    
+- id: 'Push server image'
+  name: 'gcr.io/cloud-builders/docker'
   dir: "server"
   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
-- name: 'gcr.io/cloud-builders/gcloud'
+
+- id: 'Deploy server image to app engine'
+  name: 'gcr.io/cloud-builders/gcloud'
   dir: "server"
   args: ['app', 'deploy', '--appyaml=server.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
+
 images:
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
