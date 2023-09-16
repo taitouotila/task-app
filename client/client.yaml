@@ -1,6 +1,15 @@
 runtime: custom
 env: flex
 service: default
+handlers:
+- url: /static
+  static_dir: static
+  secure: always
+
+- url: /.*
+  script: auto
+  secure: always
+
 manual_scaling:
   instances: 1
 resources:

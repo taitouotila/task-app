@@ -1,16 +1,17 @@
 runtime: nodejs
 env: flex
 service: server
-# env_variables:
-#   DB_HOST=${_DB_HOST}
-#   DB_PORT=${_DB_PORT}
-#   POSTGRES_USER=${_POSTGRES_USER}
-#   POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}
-#   POSTGRES_DB=${_POSTGRES_DB}
+
+handlers:
+- url: /.*
+  script: auto
+  secure: always  
+
 manual_scaling:
   instances: 1
 resources:
   cpu: 1
   memory_gb: 0.5
   disk_size_gb: 10
-
+beta_settings:
+  cloud_sql_instances: onyx-incentive-398513:europe-north1:task-app-db
