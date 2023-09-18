@@ -8,7 +8,6 @@ function App() {
     const [task, setTask] = useState("");
     const [tasks, setTasks] = useState<Task[]>([]);
 
-    console.log(tasks);
     return (
         <div className="App">
             <h1>TaskApp</h1>

@@ -9,6 +9,10 @@ RUN npm install --omit=dev
 
 COPY . .
 
+ARG SERVER_HOST
+
+ENV REACT_APP_SERVER_HOST=${SERVER_HOST}
+
 RUN npm run build
 
 FROM nginx:alpine

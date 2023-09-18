@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from "body-parser";
 import { config } from 'dotenv';
+import cors from 'cors';
 
 const db = require('./db');
 
@@ -8,6 +9,7 @@ config({ path: '.env' });
 
 const app = express();
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(
     bodyParser.urlencoded({

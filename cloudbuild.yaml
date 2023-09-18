@@ -1,18 +1,24 @@
 steps:
-# - id: 'Build client image'
-#   name: 'gcr.io/cloud-builders/docker'
-#   dir: "client"
-#   args: ['build', '-t', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}', '.']
-#
-# - id: 'Push client image'
-#   name: 'gcr.io/cloud-builders/docker'
-#   dir: "client"
-#   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+- id: 'Build client image'
+  name: 'gcr.io/cloud-builders/docker'
+  dir: "client"
+  args: [
+    'build',
+    '-t',
+    '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}',
+    '.',
+    '--build-arg', 'SERVER_HOST=${_SERVER_HOST}'
+   ]
 
-# - id: 'Deploy client image to app engine'
-#   name: 'gcr.io/cloud-builders/gcloud'
-#   dir: "client"
-#   args: ['app', 'deploy', '--appyaml=client.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+- id: 'Push client image'
+  name: 'gcr.io/cloud-builders/docker'
+  dir: "client"
+  args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
+
+- id: 'Deploy client image to app engine'
+  name: 'gcr.io/cloud-builders/gcloud'
+  dir: "client"
+  args: ['app', 'deploy', '--appyaml=client.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
 
 - id: 'Build server image'
   name: 'gcr.io/cloud-builders/docker'
@@ -40,7 +46,7 @@ steps:
   args: ['app', 'deploy', '--appyaml=server.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
 
 images:
-# - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
+- '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
 logsBucket: 'gs://taskapp-deploy-logs'
 options:

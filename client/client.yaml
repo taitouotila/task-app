@@ -1,6 +1,6 @@
 runtime: custom
 env: flex
-service: default
+service: todo
 handlers:
 - url: /static
   static_dir: static
