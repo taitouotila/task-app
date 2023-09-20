@@ -20,34 +20,34 @@ steps:
   dir: "client"
   args: ['app', 'deploy', '--appyaml=client.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}']
 
-- id: 'Build server image'
-  name: 'gcr.io/cloud-builders/docker'
-  dir: "server"
-  args: [
-    'build',
-    '-t',
-    '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}',
-    '.',
-    '--build-arg', 'DB_HOST=${_DB_HOST}',
-    '--build-arg', 'DB_PORT=${_DB_PORT}',
-    '--build-arg', 'POSTGRES_DB=${_POSTGRES_DB}',
-    '--build-arg', 'POSTGRES_USER=${_POSTGRES_USER}',
-    '--build-arg', 'POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}',
-   ]
-
-- id: 'Push server image'
-  name: 'gcr.io/cloud-builders/docker'
-  dir: "server"
-  args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
-
-- id: 'Deploy server image to app engine'
-  name: 'gcr.io/cloud-builders/gcloud'
-  dir: "server"
-  args: ['app', 'deploy', '--appyaml=server.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
+# - id: 'Build server image'
+#   name: 'gcr.io/cloud-builders/docker'
+#   dir: "server"
+#   args: [
+#     'build',
+#     '-t',
+#     '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}',
+#     '.',
+#     '--build-arg', 'DB_HOST=${_DB_HOST}',
+#     '--build-arg', 'DB_PORT=${_DB_PORT}',
+#     '--build-arg', 'POSTGRES_DB=${_POSTGRES_DB}',
+#     '--build-arg', 'POSTGRES_USER=${_POSTGRES_USER}',
+#     '--build-arg', 'POSTGRES_PASSWORD=${_POSTGRES_PASSWORD}',
+#    ]
+#
+# - id: 'Push server image'
+#   name: 'gcr.io/cloud-builders/docker'
+#   dir: "server"
+#   args: ['push', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
+#
+# - id: 'Deploy server image to app engine'
+#   name: 'gcr.io/cloud-builders/gcloud'
+#   dir: "server"
+#   args: ['app', 'deploy', '--appyaml=server.yaml', '--image-url=${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}']
 
 images:
 - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_CLIENT}'
-- '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
+# - '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE_SERVER}'
 logsBucket: 'gs://taskapp-deploy-logs'
 options:
   logging: GCS_ONLY

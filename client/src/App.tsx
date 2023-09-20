@@ -10,7 +10,7 @@ function App() {
 
     return (
         <div className="App">
-            <h1>TaskApp</h1>
+            <h1>todo.app</h1>
             <NewTaskForm task={task} setTask={setTask} setTasks={setTasks} />
             <TaskList task={task} setTask={setTask} tasks={tasks} setTasks={setTasks} />
         </div>
